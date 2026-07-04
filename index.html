@@ -19,8 +19,10 @@
 
       /* 延長(m)の入力欄　サイズ設定 */
       input.length {
-           position: relative;
-           padding-right: 20px;
+          position: relative;
+          padding-right: 20px;
+          width: 80px;
+          text-align: right;
 }
       .length::after {
           content: "m";
@@ -104,106 +106,102 @@
 
 <!-- 行追加ボタンのJS -->
 <script>
-      //管サイズの内容積（ｍ3/ｍ）
-    const pipeTable = {
-      "6.35":  { volume1m: 0.000022 },
-      "9.52":  { volume1m: 0.000050 },
-      "12.7":  { volume1m: 0.000090 },
-      "15.88": { volume1m: 0.000143 },
-      "19.05": { volume1m: 0.000206 },
-      "22.22": { volume1m: 0.000284 },
-      "25.4":  { volume1m: 0.000374 },
-      "28.58": { volume1m: 0.000472 },
-      "31.75": { volume1m: 0.000582 },
-      "34.92": { volume1m: 0.000707 },
-      "38.1":  { volume1m: 0.000845 },
-      "41.28": { volume1m: 0.000998 },
-      "44.45": { volume1m: 0.001163 },
-      "50.8":  { volume1m: 0.001500 }
+// 1mあたりの内容積テーブル
+const pipeTable = {
+  "6.35":  { volume1m: 0.000022 },
+  "9.52":  { volume1m: 0.000050 },
+  "12.7":  { volume1m: 0.000090 },
+  "15.88": { volume1m: 0.000143 },
+  "19.05": { volume1m: 0.000206 },
+  "22.22": { volume1m: 0.000284 },
+  "25.4":  { volume1m: 0.000374 },
+  "28.58": { volume1m: 0.000472 },
+  "31.75": { volume1m: 0.000582 },
+  "34.92": { volume1m: 0.000707 },
+  "38.1":  { volume1m: 0.000845 },
+  "41.28": { volume1m: 0.000998 },
+  "44.45": { volume1m: 0.001163 },
+  "50.8":  { volume1m: 0.001500 }
 };
-  　//行ごとの内容積の計算
-    function calcVolume(pipeSize, length) {
-      if (!pipeSize || !length) return 0;
-  
-    const data = pipeTable[pipeSize];
-      return data.volume1m * length;
+
+// 行の内容積を計算する
+function calcThisRowVolume(row) {
+    const pipeSize = row.querySelector(".pipe-size").value;
+    const length = Number(row.querySelector(".length").value);
+
+    if (pipeSize && length) {
+        const volume = pipeTable[pipeSize].volume1m * length;
+        row.querySelector(".ans").textContent = volume.toFixed(6);
+    } else {
+        row.querySelector(".ans").textContent = "";
+    }
 }
 
-    // 各行 内容積計算（前行のみ計算）
-    function calcPrevRowVolume() {
-        const rows = document.querySelectorAll("#rows .row");
-        if (rows.length < 1) return;
-    
-        const prevRow = rows[rows.length - 1];
-        const pipeSize = prevRow.querySelector(".pipe-size").value;
-        const length = Number(prevRow.querySelector(".length").value);
-    
-        if (pipeSize && length) {
-            const volume = calcVolume(pipeSize, length);
-            prevRow.querySelector(".ans").textContent = volume.toFixed(6);
-        } else {
-            prevRow.querySelector(".ans").textContent = "";
-        }
-    }
-
-// 延長が変わったら計算
-    document.addEventListener("input", (e) => {
-        if (e.target.classList.contains("length")) {
-                calcPrevRowVolume();
-        }
-});
-
-// 管サイズが変わったら計算
-    document.addEventListener("change", (e) => {
-        if (e.target.classList.contains("pipe-size")) {
-            calcPrevRowVolume();
-        }
-});
-
-    // 行追加を押したときにも
-    document.getElementById("addRow").addEventListener("click", () => {
-        calcPrevRowVolume(); // ← まず前行を計算
-    
-        const rows = document.querySelectorAll("#rows .row");
-        const firstRow = rows[0];
-        const newRow = firstRow.cloneNode(true);
-    
-        newRow.querySelector(".pipe-size").value = "";
-        newRow.querySelector(".length").value = "";
-        newRow.querySelector(".ans").textContent = "";
-    
-        document.getElementById("rows").appendChild(newRow);
-});
-  
-    // 入力欄の記入チェック
-    document.addEventListener("focusin", (e) => {
-        if (!e.target.classList.contains("length")) return;
-    
+// 延長が変わったらその行を計算
+document.addEventListener("input", (e) => {
+    if (e.target.classList.contains("length")) {
         const row = e.target.closest(".row");
-        const pipeSize = row.querySelector(".pipe-size").value;
-    
-        if (!pipeSize) {
-            alert("管サイズを選択してください");
-            row.querySelector(".pipe-size").focus();
-        }
+        calcThisRowVolume(row);
+    }
 });
 
-    //全行の合計内容積の計算
-    document.getElementById("calc").addEventListener("click", () => {
-      const rows = document.querySelectorAll("#rows .row");
-      let totalVolume = 0;
-    
-      rows.forEach(row => {
+// 管サイズが変わったらその行を計算
+document.addEventListener("change", (e) => {
+    if (e.target.classList.contains("pipe-size")) {
+        const row = e.target.closest(".row");
+        calcThisRowVolume(row);
+    }
+});
+
+// 行追加ボタン
+document.getElementById("addRow").addEventListener("click", () => {
+    const rows = document.querySelectorAll("#rows .row");
+    const prevRow = rows[rows.length - 1];
+
+    // 前行を計算
+    calcThisRowVolume(prevRow);
+
+    // 新しい行を追加
+    const firstRow = rows[0];
+    const newRow = firstRow.cloneNode(true);
+
+    newRow.querySelector(".pipe-size").value = "";
+    newRow.querySelector(".length").value = "";
+    newRow.querySelector(".ans").textContent = "";
+
+    document.getElementById("rows").appendChild(newRow);
+});
+
+// 延長欄タップ時のチェック
+document.addEventListener("focusin", (e) => {
+    if (!e.target.classList.contains("length")) return;
+
+    const row = e.target.closest(".row");
+    const pipeSize = row.querySelector(".pipe-size").value;
+
+    if (!pipeSize) {
+        alert("管サイズを選択してください");
+        row.querySelector(".pipe-size").focus();
+    }
+});
+
+// 合計計算
+document.getElementById("calc").addEventListener("click", () => {
+    const rows = document.querySelectorAll("#rows .row");
+    let totalVolume = 0;
+
+    rows.forEach(row => {
         const pipeSize = row.querySelector(".pipe-size").value;
         const length = Number(row.querySelector(".length").value);
-    
-        totalVolume += calcVolume(pipeSize, length);
-      });
-    
-      document.getElementById("result").textContent =
+
+        if (pipeSize && length) {
+            totalVolume += pipeTable[pipeSize].volume1m * length;
+        }
+    });
+
+    document.getElementById("result").textContent =
         `内容積合計：${totalVolume.toFixed(6)} m³`;
 });
-
 </script>
 
 </body>
