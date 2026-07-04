@@ -44,7 +44,11 @@
       /* 管サイズ選択　注意喚起 */
       .blink {
           animation: blinkAnim 0.8s infinite;
-}
+      }
+      /* 合計　太文字 */
+      #totalValue {
+          font-weight: bold;
+      }
 
       @keyframes blinkAnim {
           0% { background-color: #ffcccc; }
@@ -224,7 +228,7 @@ document.addEventListener("focusin", (e) => {
         }
     });
 
-    document.getElementById("result").textContent =
+    document.getElementById("totalValue").textContent =
         `内容積合計：${total.toFixed(6)} m³`;
 }
 
