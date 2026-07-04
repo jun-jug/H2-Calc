@@ -65,8 +65,12 @@
       /* 各行削除ボタン */
       .delRow {
       margin-right: 10px;
-      font-size: 14px;
-      padding: 4px 8px;
+      font-size: 22px;
+      padding: 0px 8px;
+      background: transparent;
+      border: none;
+      color: #d33;          /* ← 赤系で「削除」感を出す */
+      cursor: pointer;
 }
 
     </style>
@@ -76,7 +80,7 @@
   
 <div id="rows">
   <div class="row">
-      <button class="delRow">削除</button> 
+      <button class="delRow">✖</button> 
       <select class="pipe-size">
           <option value="" disabled selected style="color:#ccc;">管サイズ</option>
           <option value="6.35">6.35φ</option>
