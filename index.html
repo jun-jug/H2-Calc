@@ -68,32 +68,31 @@
   
 <div id="rows">
   <div class="row">
-    <select class="pipe-size">
-      <option value="" disabled selected style="color:#ccc;">管サイズ</option>
-      <option value="6.35">6.35φ</option>
-      <option value="9.52">9.52φ</option>
-      <option value="12.7">12.7φ</option>
-      <option value="15.88">15.88φ</option>
-      <option value="19.05">19.05φ</option>
-      <option value="22.22">22.22φ</option>
-      <option value="25.4">25.4φ</option>
-      <option value="28.58">28.58φ</option>
-      <option value="31.75">31.75φ</option>
-      <option value="34.92">34.92φ</option>
-      <option value="38.1">38.1φ</option>
-      <option value="41.28">41.28φ</option>
-      <option value="44.45">44.45φ</option>
-      <option value="50.8">50.8φ</option>
-    </select>
-    
-    <input type="number" class="length" placeholder="m">
-    <span class="unit-m">m</span>
-
-    <!-- この行の内容積を表示する場所 -->
-    <span class="ans"></span><span class="unit-vol">m³</span>
-    <span class="unit-vol">m³</span>
-
+      <select class="pipe-size">
+        <option value="" disabled selected style="color:#ccc;">管サイズ</option>
+        <option value="6.35">6.35φ</option>
+        <option value="9.52">9.52φ</option>
+        <option value="12.7">12.7φ</option>
+        <option value="15.88">15.88φ</option>
+        <option value="19.05">19.05φ</option>
+        <option value="22.22">22.22φ</option>
+        <option value="25.4">25.4φ</option>
+        <option value="28.58">28.58φ</option>
+        <option value="31.75">31.75φ</option>
+        <option value="34.92">34.92φ</option>
+        <option value="38.1">38.1φ</option>
+        <option value="41.28">41.28φ</option>
+        <option value="44.45">44.45φ</option>
+        <option value="50.8">50.8φ</option>
+      </select>
+  
+      <input type="number" class="length" placeholder="m">
+      <span class="unit-m">m</span>
+  
+      <span class="ans"></span>
+      <span class="unit-vol">m³</span>
   </div>
+
 </div>
 
 <!-- 行追加ボタン -->
@@ -105,33 +104,7 @@
 
 <!-- 行追加ボタンのJS -->
 <script>
-    document.getElementById("addRow").addEventListener("click", () => {
-        const rows = document.querySelectorAll("#rows .row");
-    
-        // ① 前行（最後の行）だけ内容積を計算して Ans 表示
-        const prevRow = rows[rows.length - 1];
-        const pipeSize = prevRow.querySelector(".pipe-size").value;
-        const length = Number(prevRow.querySelector(".length").value);
-    
-        if (pipeSize && length) {
-            const volume = calcVolume(pipeSize, length);
-            prevRow.querySelector(".ans").textContent = volume.toFixed(6);
-        } else {
-            prevRow.querySelector(".ans").textContent = "";
-        }
-    
-        // ② 新しい行を追加（初期値は全部空）
-        const firstRow = rows[0];
-        const newRow = firstRow.cloneNode(true);
-    
-        newRow.querySelector(".pipe-size").value = "";
-        newRow.querySelector(".length").value = "";
-        newRow.querySelector(".ans").textContent = ""; // ← 初期値は空欄
-    
-        document.getElementById("rows").appendChild(newRow);
-});
-
-    //管サイズの内容積（ｍ3/ｍ）
+      //管サイズの内容積（ｍ3/ｍ）
     const pipeTable = {
       "6.35":  { volume1m: 0.000022 },
       "9.52":  { volume1m: 0.000050 },
