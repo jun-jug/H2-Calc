@@ -14,7 +14,7 @@
       select.pipe-size {
         height: 40px;      /* ←スマホで押しやすい高さ */
         font-size: 18px;   /* ←文字も大きく */
-        width: 100px;   /* ←ここ好きなサイズに変更してOK */
+        width: 80px;   /* ←ここ好きなサイズに変更してOK */
       }
 
       /* 延長(m)の入力欄　サイズ設定 */
@@ -68,10 +68,10 @@
 
       /* 各行削除ボタン */
       .delRow {
-      margin-right: 10px;
+      margin-right: 5px;
       font-size: 22px;
-      padding: 0px 8px;
-      background: transparent;
+      padding: 0px 0px;
+      background: none;
       border: none;
       color: #d33;          /* ← 赤系で「削除」感を出す */
       cursor: pointer;
@@ -86,7 +86,7 @@
   <div class="row">
       <button class="delRow">✖</button> 
       <select class="pipe-size">
-          <option value="" disabled selected style="color:#ccc;">管サイズ</option>
+          <option value="" disabled selected style="color:#ccc;">サイズ</option>
           <option value="6.35">6.35φ</option>
           <option value="9.52">9.52φ</option>
           <option value="12.7">12.7φ</option>
