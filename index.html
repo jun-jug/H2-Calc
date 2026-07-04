@@ -1,3 +1,12 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>N2計算アプリ</title>
+</head>
+<body>
+  
 <div id="rows">
   <div class="row">
     <select class="pipe-size">
@@ -23,3 +32,19 @@
 
 <button id="addRow">＋ 行を追加</button>
 
+<!-- 行追加ボタンのJS -->
+<script>
+  document.getElementById("addRow").addEventListener("click", () => {
+    const rows = document.getElementById("rows");
+    const firstRow = rows.children[0];
+    const newRow = firstRow.cloneNode(true);
+
+    // 延長欄を空にする
+    newRow.querySelector(".length").value = "";
+
+    rows.appendChild(newRow);
+  });
+</script>
+
+</body>
+</html>
