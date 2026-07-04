@@ -20,7 +20,7 @@
       /* 延長(m)の入力欄　サイズ設定 */
       input.length {
            position: relative;
-    padding-right: 20px;
+           padding-right: 20px;
 }
       .length::after {
           content: "m";
@@ -85,11 +85,7 @@
       <option value="44.45">44.45φ</option>
       <option value="50.8">50.8φ</option>
     </select>
-
-<!-- 延長（ｍ）の記入欄 -->
-    <input type="number" class="length" placeholder="m">
-    <span class="unit-m">m</span>
-    
+   
 <!-- この行の内容積を表示する場所 -->
     <span class="ans"></span><span class="unit-vol">m³</span>
 
@@ -158,29 +154,29 @@
 
     // 各行 内容積計算（前行のみ計算）
     function calcPrevRowVolume() {
-    const rows = document.querySelectorAll("#rows .row");
-    if (rows.length < 1) return;
-
-    const prevRow = rows[rows.length - 1];
-    const pipeSize = prevRow.querySelector(".pipe-size").value;
-    const length = Number(prevRow.querySelector(".length").value);
-
-    if (pipeSize && length) {
-        const volume = calcVolume(pipeSize, length);
-        prevRow.querySelector(".ans").textContent = volume.toFixed(6);
-    } else {
-        prevRow.querySelector(".ans").textContent = "";
-    }
-}
+        const rows = document.querySelectorAll("#rows .row");
+        if (rows.length < 1) return;
     
-    // 延長（ｍ）欄からフォーカスが外れた時の容積計算
-    document.addEventListener("focusout", (e) => {
-    if (e.target.classList.contains("length")) {
-        calcPrevRowVolume();
+        const prevRow = rows[rows.length - 1];
+        const pipeSize = prevRow.querySelector(".pipe-size").value;
+        const length = Number(prevRow.querySelector(".length").value);
+    
+        if (pipeSize && length) {
+            const volume = calcVolume(pipeSize, length);
+            prevRow.querySelector(".ans").textContent = volume.toFixed(6);
+        } else {
+            prevRow.querySelector(".ans").textContent = "";
+        }
     }
+
+// 延長が変わったら計算
+    document.addEventListener("input", (e) => {
+        if (e.target.classList.contains("length")) {
+                calcPrevRowVolume();
+        }
 });
 
-    // プルダウンを触ったときにも
+// 管サイズが変わったら計算
     document.addEventListener("change", (e) => {
         if (e.target.classList.contains("pipe-size")) {
             calcPrevRowVolume();
