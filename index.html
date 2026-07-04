@@ -59,7 +59,12 @@
   </div>
 </div>
 
-<button id="addRow">＋ 行を追加</button>
+  //行追加ボタン
+  <button id="addRow">＋ 行を追加</button>
+
+  //結果表示エリアと合計ボタン
+  <div id="result">内容積合計：0 m³</div>
+  <button id="calc">計算する</button>
 
 <!-- 行追加ボタンのJS -->
 <script>
@@ -73,6 +78,47 @@
 
     rows.appendChild(newRow);
   });
+    //管サイズの内容積（ｍ3/ｍ）
+    const pipeTable = {
+      "6.35":  { volume1m: 0.000022 },
+      "9.52":  { volume1m: 0.000050 },
+      "12.7":  { volume1m: 0.000090 },
+      "15.88": { volume1m: 0.000143 },
+      "19.05": { volume1m: 0.000206 },
+      "22.22": { volume1m: 0.000284 },
+      "25.4":  { volume1m: 0.000374 },
+      "28.58": { volume1m: 0.000472 },
+      "31.75": { volume1m: 0.000582 },
+      "34.92": { volume1m: 0.000707 },
+      "38.1":  { volume1m: 0.000845 },
+      "41.28": { volume1m: 0.000998 },
+      "44.45": { volume1m: 0.001163 },
+      "50.8":  { volume1m: 0.001500 }
+};
+  　//行ごとの内容積の計算
+    function calcVolume(pipeSize, length) {
+      if (!pipeSize || !length) return 0;
+  
+    const data = pipeTable[pipeSize];
+      return data.volume1m * length;
+}
+
+    //全行の合計内容積の計算
+    document.getElementById("calc").addEventListener("click", () => {
+      const rows = document.querySelectorAll("#rows .row");
+      let totalVolume = 0;
+    
+      rows.forEach(row => {
+        const pipeSize = row.querySelector(".pipe-size").value;
+        const length = Number(row.querySelector(".length").value);
+    
+        totalVolume += calcVolume(pipeSize, length);
+      });
+    
+      document.getElementById("result").textContent =
+        `内容積合計：${totalVolume.toFixed(6)} m³`;
+});
+
 </script>
 
 </body>
