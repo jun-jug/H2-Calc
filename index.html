@@ -19,10 +19,20 @@
 
       /* 延長(m)の入力欄　サイズ設定 */
       input.length {
-        height: 40px;      /* ←スマホで押しやすい高さ */
-        font-size: 18px;   /* ←文字も大きく */
-        width: 100px;    /* ←ここも好きに調整できる */
-      }
+           position: relative;
+    padding-right: 20px;
+}
+      .length::after {
+          content: "m";
+          position: absolute;
+          right: 6px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #555;
+          height: 40px;      /* ←スマホで押しやすい高さ */
+          font-size: 18px;   /* ←文字も大きく */
+          width: 100px;    /* ←ここも好きに調整できる */
+    }
   
       /* 行追加ボタン */
       #addRow {
@@ -145,6 +155,53 @@
     const data = pipeTable[pipeSize];
       return data.volume1m * length;
 }
+
+    // 各行 内容積計算（前行のみ計算）
+    function calcPrevRowVolume() {
+    const rows = document.querySelectorAll("#rows .row");
+    if (rows.length < 1) return;
+
+    const prevRow = rows[rows.length - 1];
+    const pipeSize = prevRow.querySelector(".pipe-size").value;
+    const length = Number(prevRow.querySelector(".length").value);
+
+    if (pipeSize && length) {
+        const volume = calcVolume(pipeSize, length);
+        prevRow.querySelector(".ans").textContent = volume.toFixed(6);
+    } else {
+        prevRow.querySelector(".ans").textContent = "";
+    }
+}
+    
+    // 延長（ｍ）欄からフォーカスが外れた時の容積計算
+    document.addEventListener("focusout", (e) => {
+    if (e.target.classList.contains("length")) {
+        calcPrevRowVolume();
+    }
+});
+
+    // プルダウンを触ったときにも
+    document.addEventListener("change", (e) => {
+        if (e.target.classList.contains("pipe-size")) {
+            calcPrevRowVolume();
+        }
+});
+
+    // 行追加を押したときにも
+    document.getElementById("addRow").addEventListener("click", () => {
+        calcPrevRowVolume(); // ← まず前行を計算
+    
+        const rows = document.querySelectorAll("#rows .row");
+        const firstRow = rows[0];
+        const newRow = firstRow.cloneNode(true);
+    
+        newRow.querySelector(".pipe-size").value = "";
+        newRow.querySelector(".length").value = "";
+        newRow.querySelector(".ans").textContent = "";
+    
+        document.getElementById("rows").appendChild(newRow);
+});
+  
     // 入力欄の記入チェック
     document.addEventListener("focusin", (e) => {
         if (!e.target.classList.contains("length")) return;
@@ -157,7 +214,6 @@
             row.querySelector(".pipe-size").focus();
         }
 });
-
 
     //全行の合計内容積の計算
     document.getElementById("calc").addEventListener("click", () => {
