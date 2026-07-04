@@ -14,15 +14,15 @@
       select.pipe-size {
         height: 40px;      /* ←スマホで押しやすい高さ */
         font-size: 18px;   /* ←文字も大きく */
-        width: 140px;   /* ←ここ好きなサイズに変更してOK */
+        width: 120px;   /* ←ここ好きなサイズに変更してOK */
       }
 
       /* 延長(m)の入力欄　サイズ設定 */
       input.length {
           position: relative;
           padding-right: 20px;
-          height: 40px;
-          width: 50px;
+          height: 30px;
+          width: 40px;
           font-size: 18px;
           text-align: right;
 }
@@ -62,6 +62,13 @@
           color: #555;
 }
 
+      /* 各行削除ボタン */
+      .delRow {
+      margin-right: 10px;
+      font-size: 14px;
+      padding: 4px 8px;
+}
+
     </style>
   
 </head>
@@ -69,22 +76,23 @@
   
 <div id="rows">
   <div class="row">
+      <button class="delRow">削除</button> 
       <select class="pipe-size">
-        <option value="" disabled selected style="color:#ccc;">管サイズ</option>
-        <option value="6.35">6.35φ</option>
-        <option value="9.52">9.52φ</option>
-        <option value="12.7">12.7φ</option>
-        <option value="15.88">15.88φ</option>
-        <option value="19.05">19.05φ</option>
-        <option value="22.22">22.22φ</option>
-        <option value="25.4">25.4φ</option>
-        <option value="28.58">28.58φ</option>
-        <option value="31.75">31.75φ</option>
-        <option value="34.92">34.92φ</option>
-        <option value="38.1">38.1φ</option>
-        <option value="41.28">41.28φ</option>
-        <option value="44.45">44.45φ</option>
-        <option value="50.8">50.8φ</option>
+          <option value="" disabled selected style="color:#ccc;">管サイズ</option>
+          <option value="6.35">6.35φ</option>
+          <option value="9.52">9.52φ</option>
+          <option value="12.7">12.7φ</option>
+          <option value="15.88">15.88φ</option>
+          <option value="19.05">19.05φ</option>
+          <option value="22.22">22.22φ</option>
+          <option value="25.4">25.4φ</option>
+          <option value="28.58">28.58φ</option>
+          <option value="31.75">31.75φ</option>
+          <option value="34.92">34.92φ</option>
+          <option value="38.1">38.1φ</option>
+          <option value="41.28">41.28φ</option>
+          <option value="44.45">44.45φ</option>
+          <option value="50.8">50.8φ</option>
       </select>
   
       <input type="number" class="length" placeholder="m">
@@ -105,7 +113,16 @@
 
 <!-- 行追加ボタンのJS -->
 <script>
-// 1mあたりの内容積テーブル
+
+  // 各行削除
+  document.addEventListener("click", (e) => {
+     if (e.target.classList.contains("delRow")) {
+         const row = e.target.closest(".row");
+         row.remove();
+     }
+});
+  
+  // 1mあたりの内容積テーブル
 const pipeTable = {
   "6.35":  { volume1m: 0.000022 },
   "9.52":  { volume1m: 0.000050 },
