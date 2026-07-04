@@ -67,8 +67,10 @@
     </select>
 
     <input type="number" class="length" placeholder="m">
+   
     <!-- この行の内容積を表示する場所 -->
-    <span class="ans">0</span>
+    <span class="ans"></span>
+    
   </div>
 </div>
 
@@ -81,16 +83,32 @@
 
 <!-- 行追加ボタンのJS -->
 <script>
-  document.getElementById("addRow").addEventListener("click", () => {
-    const rows = document.getElementById("rows");
-    const firstRow = rows.children[0];
-    const newRow = firstRow.cloneNode(true);
+    document.getElementById("addRow").addEventListener("click", () => {
+        const rows = document.querySelectorAll("#rows .row");
+    
+        // ① 前行（最後の行）だけ内容積を計算して Ans 表示
+        const prevRow = rows[rows.length - 1];
+        const pipeSize = prevRow.querySelector(".pipe-size").value;
+        const length = Number(prevRow.querySelector(".length").value);
+    
+        if (pipeSize && length) {
+            const volume = calcVolume(pipeSize, length);
+            prevRow.querySelector(".ans").textContent = volume.toFixed(6);
+        } else {
+            prevRow.querySelector(".ans").textContent = "";
+        }
+    
+        // ② 新しい行を追加（初期値は全部空）
+        const firstRow = rows[0];
+        const newRow = firstRow.cloneNode(true);
+    
+        newRow.querySelector(".pipe-size").value = "";
+        newRow.querySelector(".length").value = "";
+        newRow.querySelector(".ans").textContent = ""; // ← 初期値は空欄
+    
+        document.getElementById("rows").appendChild(newRow);
+});
 
-    // 延長欄を空にする
-    newRow.querySelector(".length").value = "";
-
-    rows.appendChild(newRow);
-  });
     //管サイズの内容積（ｍ3/ｍ）
     const pipeTable = {
       "6.35":  { volume1m: 0.000022 },
@@ -116,20 +134,18 @@
       return data.volume1m * length;
 }
     // 入力欄の記入チェック
-    document.addEventListener("input", (e) => {
-    if (!e.target.classList.contains("length")) return;
-
-    const row = e.target.closest(".row");
-    const pipeSize = row.querySelector(".pipe-size").value;
-    const length = e.target.value;
-
-    // 管サイズ未選択 ＋ m入力あり → 点滅
-    if (!pipeSize && length) {
-        row.querySelector(".pipe-size").classList.add("blink");
-    } else {
-        row.querySelector(".pipe-size").classList.remove("blink");
-    }
+    document.addEventListener("focusin", (e) => {
+        if (!e.target.classList.contains("length")) return;
+    
+        const row = e.target.closest(".row");
+        const pipeSize = row.querySelector(".pipe-size").value;
+    
+        if (!pipeSize) {
+            alert("管サイズを選択してください");
+            row.querySelector(".pipe-size").focus();
+        }
 });
+
 
     //全行の合計内容積の計算
     document.getElementById("calc").addEventListener("click", () => {
