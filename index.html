@@ -30,6 +30,17 @@
         font-size: 18px;
         padding: 8px 15px;
     }
+      /* 管サイズ選択　注意喚起 */
+      .blink {
+          animation: blinkAnim 0.8s infinite;
+}
+
+      @keyframes blinkAnim {
+          0% { background-color: #ffcccc; }
+          50% { background-color: #ffffff; }
+          100% { background-color: #ffcccc; }
+}
+
     </style>
   
 </head>
@@ -56,6 +67,8 @@
     </select>
 
     <input type="number" class="length" placeholder="m">
+    <!-- この行の内容積を表示する場所 -->
+    <span class="ans">0</span>
   </div>
 </div>
 
@@ -102,6 +115,21 @@
     const data = pipeTable[pipeSize];
       return data.volume1m * length;
 }
+    // 入力欄の記入チェック
+    document.addEventListener("input", (e) => {
+    if (!e.target.classList.contains("length")) return;
+
+    const row = e.target.closest(".row");
+    const pipeSize = row.querySelector(".pipe-size").value;
+    const length = e.target.value;
+
+    // 管サイズ未選択 ＋ m入力あり → 点滅
+    if (!pipeSize && length) {
+        row.querySelector(".pipe-size").classList.add("blink");
+    } else {
+        row.querySelector(".pipe-size").classList.remove("blink");
+    }
+});
 
     //全行の合計内容積の計算
     document.getElementById("calc").addEventListener("click", () => {
