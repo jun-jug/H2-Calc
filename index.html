@@ -68,6 +68,7 @@
 
       /* 各行削除ボタン */
       .delRow {
+      display: none;      /* ← 最初は隠す */
       margin-right: 5px;
       font-size: 22px;
       padding: 0px 0px;
@@ -76,7 +77,12 @@
       color: #d33;          /* ← 赤系で「削除」感を出す */
       cursor: pointer;
 }
-
+      .row-controls{
+          display: flex;
+          gap: 10px;
+          margin-buttom: 10px;
+      }
+    
     </style>
   
 </head>
@@ -112,17 +118,34 @@
 
 </div>
 
-<!-- 行追加ボタン -->
-  <button id="addRow">＋ 行を追加</button>
+<!-- 行追加ボタン --> <!-- 行削除モード切替ボタン -->
+  <div class="row-controls">
+    <button id="addRow">＋ 行を追加</button>
+    <button id="toggleDelete">行削除モード：OFF</button>
+  </div>
 
 <!-- 結果表示エリアと合計ボタン -->
   <div id="result">
       内容積合計：<span id="totalValue">0</span> m³
   </div>
 
-<!-- 行追加ボタンのJS -->
 <script>
-
+  // モード切替
+    let deleteMode = false;
+    
+    document.getElementById("toggleDelete").addEventListener("click", () => {
+        deleteMode = !deleteMode;
+    
+        // ボタンの表示切替
+        document.getElementById("toggleDelete").textContent =
+            deleteMode ? "行削除モード：ON" : "行削除モード：OFF";
+    
+        // 全ての行の ✖ ボタンをON/OFF
+        document.querySelectorAll(".delRow").forEach(btn => {
+            btn.style.display = deleteMode ? "inline-block" : "none";
+        });
+    });
+  
   // 各行削除
   document.addEventListener("click", (e) => {
      if (e.target.classList.contains("delRow")) {
@@ -195,6 +218,8 @@ document.getElementById("addRow").addEventListener("click", () => {
     newRow.querySelector(".pipe-size").value = "";
     newRow.querySelector(".length").value = "";
     newRow.querySelector(".ans").textContent = "";
+    newRow.querySelector(".delRow").style.display =
+        deleteMode ? "inline-block" : "none";
 
     document.getElementById("rows").appendChild(newRow);
 
