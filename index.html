@@ -14,7 +14,7 @@
       select.pipe-size {
         height: 40px;      /* ←スマホで押しやすい高さ */
         font-size: 18px;   /* ←文字も大きく */
-        width: 100px;   /* ←ここ好きなサイズに変更してOK */
+        width: 120px;   /* ←ここ好きなサイズに変更してOK */
       }
 
       /* 延長(m)の入力欄　サイズ設定 */
@@ -35,12 +35,18 @@
           color: #555;
     }
   
-      /* 行追加ボタン */
-      #addRow {
+      /* 行追加ボタン・削除ボタン　見た目 */
+      .actionBtn {
         margin-top: 15px;
         font-size: 18px;
         padding: 8px 10px;
     }
+
+      /* 削除モードON　見た目 */
+      .actionBtn.delete-on{
+          background: #d33;
+      }
+    
       /* 管サイズ選択　注意喚起 */
       .blink {
           animation: blinkAnim 0.8s infinite;
@@ -120,8 +126,8 @@
 
 <!-- 行追加ボタン --> <!-- 行削除モード切替ボタン -->
   <div class="row-controls">
-    <button id="addRow">＋ 行を追加</button>
-    <button id="toggleDelete">行削除モード：OFF</button>
+    <button id="addrow" class="actionBtn">行を追加</button>
+    <button id="toggleDeleat" class="actionBtn">行削除：OFF</button>
   </div>
 
 <!-- 結果表示エリアと合計ボタン -->
