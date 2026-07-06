@@ -127,7 +127,7 @@
 <!-- 行追加ボタン --> <!-- 行削除モード切替ボタン -->
   <div class="row-controls">
     <button id="addrow" class="actionBtn">行を追加</button>
-    <button id="toggleDeleat" class="actionBtn">行削除：OFF</button>
+    <button id="toggleDelete" class="actionBtn">行削除：OFF</button>
   </div>
 
 <!-- 結果表示エリアと合計ボタン -->
@@ -144,7 +144,7 @@
     
         // ボタンの表示切替
         document.getElementById("toggleDelete").textContent =
-            deleteMode ? "行削除モード：ON" : "行削除モード：OFF";
+            deleteMode ? "行削除：ON" : "行削除：OFF";
     
         // 全ての行の ✖ ボタンをON/OFF
         document.querySelectorAll(".delRow").forEach(btn => {
