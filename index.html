@@ -145,7 +145,10 @@
         // ボタンの表示切替
         document.getElementById("toggleDelete").textContent =
             deleteMode ? "行削除：ON" : "行削除：OFF";
-    
+
+        // ★ 削除モードONのとき赤くする
+        document.getElementById("toggleDelete").classList.toggle("delete-on", deleteMode);      
+        
         // 全ての行の ✖ ボタンをON/OFF
         document.querySelectorAll(".delRow").forEach(btn => {
             btn.style.display = deleteMode ? "inline-block" : "none";
