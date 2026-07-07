@@ -107,6 +107,28 @@
           margin-left: 18px;   /* ← 2文字ぶんの余白 */
       }  
     
+      #bottomArea {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #fff;
+      padding: 10px 15px;
+      border-top: 2px solid #ccc;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+      }
+      .testPress {
+          width: 80px;        /* ←短く */
+          height: 40px;       /* ←太く */
+          font-size: 22px;    /* ←文字大きく */
+          font-weight: bold;  /* ←太文字 */
+          text-align: right;  /* ←数字を右寄せ */
+      }
+      #bottleCount {
+          font-weight: bold;
+          font-size: 24px;
+      }
+
     </style>
   
 </head>
@@ -149,9 +171,10 @@
   </div>
 
 <!-- 結果表示エリアと合計ボタン -->
-  <div id="result">
-      内容積合計：<span id="totalValue">0</span> m³
-  </div>
+  <div id="bottomArea">
+      <div id="result">
+          内容積合計：<span id="totalValue">0</span> m³
+      </div>
 
 <!-- 試験圧力（MPa）　入力欄 -->
       試験圧力（Mpa）:<input id="testPressure" type="number" step="0.1">
@@ -160,6 +183,7 @@
       <div id="bottleArea">
           必要ボンベ本数:<span id="bottleCount">0</span> 本
       </div>
+  </div>
 
 <!-- 全行削除時のテンプレート -->
     <div id="originalRow" class="row" style="display:none;">
