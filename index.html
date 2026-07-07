@@ -388,9 +388,14 @@ document.getElementById("addrow").addEventListener("click", () => {
 
 
 // 試験圧力入力後　再計算
-          document.getElementById("testPressure").addEventListener("input", () => {
-            calcTotalVolume();
-          });
+             const testInput = document.getElementById("testPressure");
+
+            testInput.addEventListener("input", () => {
+                const v = Number(testInput.value);
+                if (v > 0) {
+                  calcTotalVolume();
+                }
+              });
 
 </script>
 
