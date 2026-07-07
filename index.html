@@ -278,7 +278,11 @@
              });
           
              document.getElementById("totalValue").textContent = total.toFixed(6);
-        }
+
+// ★ 本数計算を追加（呼び出し）
+                    const bottleCount = calcBottleCount(total);
+                    document.getElementById("bottleCount").textContent = bottleCount;
+          }  
 
 // 絶対圧力の計算
           function calcEffectiveBottleVolume() {
@@ -301,6 +305,11 @@
 
               return Math.ceil(totalVolume / effective);
           }
+
+// 試験圧力入力後　再計算
+          document.getElementById("testPressure").addEventListener("input", () => {
+            calcTotalVolume();
+          });
 
 </script>
 
