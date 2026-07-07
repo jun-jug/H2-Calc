@@ -25,7 +25,7 @@
           width: 40px;
           font-size: 18px;
           text-align: right;
-}
+      }
       .length::after {
           content: "m";
           position: absolute;
@@ -33,14 +33,14 @@
           top: 50%;
           transform: translateY(-50%);
           color: #555;
-    }
+      }
   
       /* 行追加ボタン・削除ボタン　見た目 */
       .actionBtn {
         margin-top: 15px;
         font-size: 18px;
         padding: 8px 10px;
-    }
+      }
 
       /* 削除モードON　見た目 */
       .actionBtn.delete-on{
@@ -61,19 +61,20 @@
           0% { background-color: #ffcccc; }
           50% { background-color: #ffffff; }
           100% { background-color: #ffcccc; }
-}
-      /* 各行ｍの表示 */
+      }
+  
+/* 各行ｍの表示 */
       .unit-m {
           margin-left: 4px;
-}
+      }
     
-      /* 各行容積単位の表示 */
+/* 各行容積単位の表示 */
       .unit-vol {
           margin-left: 4px;
           color: #555;
-}
+      }
 
-      /* 各行削除ボタン */
+/* 各行削除ボタン */
       .delRow {
       display: none;      /* ← 最初は隠す */
       margin-right: 5px;
@@ -83,7 +84,7 @@
       border: none;
       color: #d33;          /* ← 赤系で「削除」感を出す */
       cursor: pointer;
-}
+      }
       .row-controls{
           display: flex;
           gap: 10px;
@@ -140,135 +141,166 @@
       内容積合計：<span id="totalValue">0</span> m³
   </div>
 
+<!-- 試験圧力（MPa）　入力欄 -->
+      試験圧力（Mpa）:<input id="testPressurre" type="number" step="0.1">
+
+<!-- 必要ボンベ本数 -->
+      <div id="bottleArea">
+          必要ボンベ本数:<span id="bottleCount">0</span> 本
+      </div>
+  
 <script>
-  // モード切替
+
+// モード切替
     let deleteMode = false;
     
     document.getElementById("toggleDelete").addEventListener("click", () => {
         deleteMode = !deleteMode;
     
-        // ボタンの表示切替
+// ボタンの表示切替
         document.getElementById("toggleDelete").textContent =
             deleteMode ? "行削除：ON" : "行削除：OFF";
 
-        // ★ 削除モードONのとき赤くする
+// ★ 削除モードONのとき赤くする
         document.getElementById("toggleDelete").classList.toggle("delete-on", deleteMode);      
         
-        // 全ての行の ✖ ボタンをON/OFF
+// 全ての行の ✖ ボタンをON/OFF
         document.querySelectorAll(".delRow").forEach(btn => {
             btn.style.display = deleteMode ? "inline-block" : "none";
         });
     });
   
-  // 各行削除
-  document.addEventListener("click", (e) => {
-     if (e.target.classList.contains("delRow")) {
-         const row = e.target.closest(".row");
-         row.remove();
-         calcTotalVolume();   // ← リアルタイム合計計算　追加！
-     }
-});
-  
-  // 1mあたりの内容積テーブル
-const pipeTable = {
-  "6.35":  { volume1m: 0.000022 },
-  "9.52":  { volume1m: 0.000050 },
-  "12.7":  { volume1m: 0.000090 },
-  "15.88": { volume1m: 0.000143 },
-  "19.05": { volume1m: 0.000206 },
-  "22.22": { volume1m: 0.000284 },
-  "25.4":  { volume1m: 0.000374 },
-  "28.58": { volume1m: 0.000472 },
-  "31.75": { volume1m: 0.000582 },
-  "34.92": { volume1m: 0.000707 },
-  "38.1":  { volume1m: 0.000845 },
-  "41.28": { volume1m: 0.000998 },
-  "44.45": { volume1m: 0.001163 },
-  "50.8":  { volume1m: 0.001500 }
-};
+// 各行削除
+        document.addEventListener("click", (e) => {
+           if (e.target.classList.contains("delRow")) {
+               const row = e.target.closest(".row");
+               row.remove();
+               calcTotalVolume();   // ← リアルタイム合計計算　追加！
+           }
+      });
+        
+// 1mあたりの内容積テーブル
+        const pipeTable = {
+          "6.35":  { volume1m: 0.000022 },
+          "9.52":  { volume1m: 0.000050 },
+          "12.7":  { volume1m: 0.000090 },
+          "15.88": { volume1m: 0.000143 },
+          "19.05": { volume1m: 0.000206 },
+          "22.22": { volume1m: 0.000284 },
+          "25.4":  { volume1m: 0.000374 },
+          "28.58": { volume1m: 0.000472 },
+          "31.75": { volume1m: 0.000582 },
+          "34.92": { volume1m: 0.000707 },
+          "38.1":  { volume1m: 0.000845 },
+          "41.28": { volume1m: 0.000998 },
+          "44.45": { volume1m: 0.001163 },
+          "50.8":  { volume1m: 0.001500 }
+        };
 
 // 行の内容積を計算する
-function calcThisRowVolume(row) {
-    const pipeSize = row.querySelector(".pipe-size").value;
-    const length = Number(row.querySelector(".length").value);
-
-    if (pipeSize && length) {
-        const volume = pipeTable[pipeSize].volume1m * length;
-        row.querySelector(".ans").textContent = volume.toFixed(6);
-    } else {
-        row.querySelector(".ans").textContent = "";
-    }
-        calcTotalVolume();   // ← これ追加！リアルタイム更新
-}
+          function calcThisRowVolume(row) {
+              const pipeSize = row.querySelector(".pipe-size").value;
+              const length = Number(row.querySelector(".length").value);
+          
+              if (pipeSize && length) {
+                  const volume = pipeTable[pipeSize].volume1m * length;
+                  row.querySelector(".ans").textContent = volume.toFixed(6);
+              } else {
+                  row.querySelector(".ans").textContent = "";
+              }
+                  calcTotalVolume();   // ← これ追加！リアルタイム更新
+          }
 
 // 延長が変わったらその行を計算
-document.addEventListener("input", (e) => {
-    if (e.target.classList.contains("length")) {
-        const row = e.target.closest(".row");
-        calcThisRowVolume(row);
-    }
-});
+          document.addEventListener("input", (e) => {
+              if (e.target.classList.contains("length")) {
+                  const row = e.target.closest(".row");
+                  calcThisRowVolume(row);
+              }
+          });
 
 // 管サイズが変わったらその行を計算
-document.addEventListener("change", (e) => {
-    if (e.target.classList.contains("pipe-size")) {
-        const row = e.target.closest(".row");
-        calcThisRowVolume(row);
-    }
-});
+          document.addEventListener("change", (e) => {
+              if (e.target.classList.contains("pipe-size")) {
+                  const row = e.target.closest(".row");
+                  calcThisRowVolume(row);
+              }
+          });
 
 // 行追加ボタン
-document.getElementById("addrow").addEventListener("click", () => {
-    const rows = document.querySelectorAll("#rows .row");
-    const prevRow = rows[rows.length - 1];
+          document.getElementById("addrow").addEventListener("click", () => {
+              const rows = document.querySelectorAll("#rows .row");
+              const prevRow = rows[rows.length - 1];
 
-    // 前行を計算
-    calcThisRowVolume(prevRow);
+// 前行を計算
+          calcThisRowVolume(prevRow);
 
-    // 新しい行を追加
-    const firstRow = rows[0];
-    const newRow = firstRow.cloneNode(true);
+// 新しい行を追加
+          const firstRow = rows[0];
+          const newRow = firstRow.cloneNode(true);
 
-    newRow.querySelector(".pipe-size").value = "";
-    newRow.querySelector(".length").value = "";
-    newRow.querySelector(".ans").textContent = "";
-    newRow.querySelector(".delRow").style.display =
-        deleteMode ? "inline-block" : "none";
-
-    document.getElementById("rows").appendChild(newRow);
-
-    calcTotalVolume();   // ← リアルタイム合計計算　追加！
-});
+          newRow.querySelector(".pipe-size").value = "";
+          newRow.querySelector(".length").value = "";
+          newRow.querySelector(".ans").textContent = "";
+          newRow.querySelector(".delRow").style.display =
+              deleteMode ? "inline-block" : "none";
+      
+          document.getElementById("rows").appendChild(newRow);
+      
+          calcTotalVolume();   // ← リアルタイム合計計算　追加！
+        });
 
 // 延長欄タップ時のチェック
-document.addEventListener("focusin", (e) => {
-    if (!e.target.classList.contains("length")) return;
+          document.addEventListener("focusin", (e) => {
+              if (!e.target.classList.contains("length")) return;
+          
+              const row = e.target.closest(".row");
+              const pipeSize = row.querySelector(".pipe-size").value;
+          
+              if (!pipeSize) {
+                  alert("管サイズを選択してください");
+                  row.querySelector(".pipe-size").focus();
+              }
+          });
 
-    const row = e.target.closest(".row");
-    const pipeSize = row.querySelector(".pipe-size").value;
-
-    if (!pipeSize) {
-        alert("管サイズを選択してください");
-        row.querySelector(".pipe-size").focus();
-    }
-});
-// 合計の計算
-  function calcTotalVolume() {
-    const rows = document.querySelectorAll("#rows .row");
-    let total = 0;
-
-    rows.forEach(row => {
-        const pipeSize = row.querySelector(".pipe-size").value;
-        const length = Number(row.querySelector(".length").value);
-
-        if (pipeSize && length) {
-            total += pipeTable[pipeSize].volume1m * length;
+  // 合計の計算
+          function calcTotalVolume() {
+            const rows = document.querySelectorAll("#rows .row");
+            let total = 0;
+          
+            rows.forEach(row => {
+                 const pipeSize = row.querySelector(".pipe-size").value;
+                const length = Number(row.querySelector(".length").value);
+          
+                if (pipeSize && length) {
+                      total += pipeTable[pipeSize].volume1m * length;
+                }
+             });
+          
+             document.getElementById("totalValue").textContent = total.toFixed(6);
         }
-    });
 
-    document.getElementById("totalValue").textContent = total.toFixed(6);
-}
+// 絶対圧力の計算
+          function calcEffectiveBottleVolume() {
+              const nominal = 7;        // 公称容量（Nm³）
+              const p_init = 14.8;      // 初期圧力（MPa abs）
+        
+// ★ 試験圧力（ゲージ）を入力 → 大気圧を足して絶対圧にする
+              const testGauge = Number(document.getElementById("testPressure").value);
+              const p_limit = testGauge + 0.1;   // ← 大気圧を足す（絶対圧）
+        
+              if (p_limit <= 0) return 0;
+        
+              return nominal * (p_limit / p_init);
+          }
 
+// 本数の計算
+          function calcBottleCount(totalVolume) {
+              const effective = calcEffectiveBottleVolume();
+              if (effective <= 0) return 0;
+
+              return Math.ceil(totalVolume / effective);
+          }
 
 </script>
 
