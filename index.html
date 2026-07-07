@@ -10,6 +10,18 @@
           font-size: 18px;   /* ←スマホで見やすいサイズ */
       }
 
+/* Chrome / Edge / Safari（WebKit系） */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+/* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
       /* 管サイズのプルダウン　サイズ設定 */
       select.pipe-size {
         height: 40px;      /* ←スマホで押しやすい高さ */
