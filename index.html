@@ -148,7 +148,15 @@
       <div id="bottleArea">
           必要ボンベ本数:<span id="bottleCount">0</span> 本
       </div>
-  
+
+<!-- 全行削除時のダミーテンプレート -->
+      <div id="rowTemplate" class="row" style="display:none;">
+          <button class="delRow">削除</button>
+          <select class="pipe-size">…</select>
+          <input type="number" class="length" placeholder="m">
+          <span class="ans"></span>
+      </div>
+
 <script>
 
 // モード切替
@@ -228,27 +236,36 @@
           });
 
 // 行追加ボタン
-          document.getElementById("addrow").addEventListener("click", () => {
-              const rows = document.querySelectorAll("#rows .row");
-              const prevRow = rows[rows.length - 1];
+document.getElementById("addrow").addEventListener("click", () => {
+    const rows = document.querySelectorAll("#rows .row");
+    let newRow;
 
-// 前行を計算
-          calcThisRowVolume(prevRow);
+    // ★ 行がゼロのとき（全削除後）
+    if (rows.length === 0) {
+        // テンプレート行を新規作成
+        const template = document.querySelector("#rowTemplate");
+        newRow = template.cloneNode(true);
+        newRow.style.display = "";
+    } else {
+        // 通常は前行を計算してから複製
+        const prevRow = rows[rows.length - 1];
+        calcThisRowVolume(prevRow);
 
-// 新しい行を追加
-          const firstRow = rows[0];
-          const newRow = firstRow.cloneNode(true);
+        const firstRow = rows[0];
+        newRow = firstRow.cloneNode(true);
+    }
 
-          newRow.querySelector(".pipe-size").value = "";
-          newRow.querySelector(".length").value = "";
-          newRow.querySelector(".ans").textContent = "";
-          newRow.querySelector(".delRow").style.display =
-              deleteMode ? "inline-block" : "none";
-      
-          document.getElementById("rows").appendChild(newRow);
-      
-          calcTotalVolume();   // ← リアルタイム合計計算　追加！
-        });
+    // 初期化
+    newRow.querySelector(".pipe-size").value = "";
+    newRow.querySelector(".length").value = "";
+    newRow.querySelector(".ans").textContent = "";
+    newRow.querySelector(".delRow").style.display =
+        deleteMode ? "inline-block" : "none";
+
+    document.getElementById("rows").appendChild(newRow);
+
+    calcTotalVolume();   // ← リアルタイム合計計算
+});
 
 // 延長欄タップ時のチェック
           document.addEventListener("focusin", (e) => {
