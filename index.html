@@ -149,14 +149,14 @@
           必要ボンベ本数:<span id="bottleCount">0</span> 本
       </div>
 
-<!-- 全行削除時のダミーテンプレート -->
-      <div id="rowTemplate" class="row" style="display:none;">
-          <button class="delRow">削除</button>
+<!-- 全行削除時のテンプレート -->
+      <div id="originalRow" class="row">
+          <button class="delRow">✖</button>
           <select class="pipe-size">…</select>
-          <input type="number" class="length" placeholder="m">
+          <input type="number" class="length">
           <span class="ans"></span>
       </div>
-
+  
 <script>
 
 // モード切替
@@ -240,11 +240,10 @@ document.getElementById("addrow").addEventListener("click", () => {
     const rows = document.querySelectorAll("#rows .row");
     let newRow;
 
-    // ★ 行がゼロのとき（全削除後）
     if (rows.length === 0) {
-        // テンプレート行を新規作成
-        const template = document.querySelector("#rowTemplate");
-        newRow = template.cloneNode(true);
+        // ★ 全行削除後は「元のHTMLにある最初の行」を再生成する
+        const original = document.querySelector("#originalRow"); 
+        newRow = original.cloneNode(true);
         newRow.style.display = "";
     } else {
         // 通常は前行を計算してから複製
@@ -264,7 +263,7 @@ document.getElementById("addrow").addEventListener("click", () => {
 
     document.getElementById("rows").appendChild(newRow);
 
-    calcTotalVolume();   // ← リアルタイム合計計算
+    calcTotalVolume();
 });
 
 // 延長欄タップ時のチェック
