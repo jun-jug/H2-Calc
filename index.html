@@ -373,12 +373,19 @@ document.getElementById("addrow").addEventListener("click", () => {
           }
 
 // 本数の計算
-          function calcBottleCount(totalVolume) {
-              const effective = calcEffectiveBottleVolume();
-              if (effective <= 0) return 0;
+              function calcBottleCount(totalVolume) {
+                  const effective = calcEffectiveBottleVolume();
+                  if (effective <= 0) return 0;
 
-              return Math.ceil(totalVolume / effective);
-          }
+                  const raw = totalVolume / effective;
+
+    // ★ 小数点3位で切り上げ
+                  const rounded3 = Math.ceil(raw * 1000) / 1000;
+
+    // ★ 表示は小数点2位
+                  return rounded3.toFixed(2);
+              }
+
 
 // 試験圧力入力後　再計算
           document.getElementById("testPressure").addEventListener("input", () => {
