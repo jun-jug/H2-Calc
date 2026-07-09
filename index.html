@@ -250,95 +250,89 @@
 </div>
  
 <script>
-
 // モード切替
-    let deleteMode = false;
-    
-    document.getElementById("toggleDelete").addEventListener("click", () => {
-        deleteMode = !deleteMode;
-    
-// ボタンの表示切替
-        document.getElementById("toggleDelete").textContent =
-            deleteMode ? "行削除：ON" : "行削除：OFF";
+let deleteMode = false;
 
-// ★ 削除モードONのとき赤くする
-        document.getElementById("toggleDelete").classList.toggle("delete-on", deleteMode);      
-        
-// 全ての行の ✖ ボタンをON/OFF
-        document.querySelectorAll(".delRow").forEach(btn => {
-            btn.style.display = deleteMode ? "inline-block" : "none";
-        });
+document.getElementById("toggleDelete").addEventListener("click", () => {
+    deleteMode = !deleteMode;
+
+    document.getElementById("toggleDelete").textContent =
+        deleteMode ? "行削除：ON" : "行削除：OFF";
+
+    document.getElementById("toggleDelete").classList.toggle("delete-on", deleteMode);
+
+    document.querySelectorAll(".delRow").forEach(btn => {
+        btn.style.display = deleteMode ? "inline-block" : "none";
     });
-  
+});
+
 // 各行削除
-        document.addEventListener("click", (e) => {
-           if (e.target.classList.contains("delRow")) {
-               const row = e.target.closest(".row");
-               row.remove();
-               calcTotalVolume();   // ← リアルタイム合計計算　追加！
-           }
-      });
-        
-// 1mあたりの内容積テーブル
-        const pipeTable = {
-          "6.35":  { volume1m: 0.000022 },
-          "9.52":  { volume1m: 0.000050 },
-          "12.7":  { volume1m: 0.000090 },
-          "15.88": { volume1m: 0.000143 },
-          "19.05": { volume1m: 0.000206 },
-          "22.22": { volume1m: 0.000284 },
-          "25.4":  { volume1m: 0.000374 },
-          "28.58": { volume1m: 0.000472 },
-          "31.75": { volume1m: 0.000582 },
-          "34.92": { volume1m: 0.000707 },
-          "38.1":  { volume1m: 0.000845 },
-          "41.28": { volume1m: 0.000998 },
-          "44.45": { volume1m: 0.001163 },
-          "50.8":  { volume1m: 0.001500 }
-        };
+document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("delRow")) {
+        const row = e.target.closest(".row");
+        row.remove();
+        calcTotalVolume();
+    }
+});
 
-// 行の内容積を計算する
-          function calcThisRowVolume(row) {
-              const pipeSize = row.querySelector(".pipe-size").value;
-              const length = Number(row.querySelector(".length").value);
-          
-              if (pipeSize && length) {
-                  const volume = pipeTable[pipeSize].volume1m * length;
-                  row.querySelector(".ans").textContent = volume.toFixed(6);
-              } else {
-                  row.querySelector(".ans").textContent = "";
-              }
-                  calcTotalVolume();   // ← これ追加！リアルタイム更新
-          }
+// 内容積テーブル
+const pipeTable = {
+    "6.35": { volume1m: 0.000022 },
+    "9.52": { volume1m: 0.000050 },
+    "12.7": { volume1m: 0.000090 },
+    "15.88": { volume1m: 0.000143 },
+    "19.05": { volume1m: 0.000206 },
+    "22.22": { volume1m: 0.000284 },
+    "25.4": { volume1m: 0.000374 },
+    "28.58": { volume1m: 0.000472 },
+    "31.75": { volume1m: 0.000582 },
+    "34.92": { volume1m: 0.000707 },
+    "38.1": { volume1m: 0.000845 },
+    "41.28": { volume1m: 0.000998 },
+    "44.45": { volume1m: 0.001163 },
+    "50.8": { volume1m: 0.001500 }
+};
 
-// 延長が変わったらその行を計算
-          document.addEventListener("input", (e) => {
-              if (e.target.classList.contains("length")) {
-                  const row = e.target.closest(".row");
-                  calcThisRowVolume(row);
-              }
-          });
+// 行の内容積計算
+function calcThisRowVolume(row) {
+    const pipeSize = row.querySelector(".pipe-size").value;
+    const length = Number(row.querySelector(".length").value);
 
-// 管サイズが変わったらその行を計算
-          document.addEventListener("change", (e) => {
-              if (e.target.classList.contains("pipe-size")) {
-                  const row = e.target.closest(".row");
-                  calcThisRowVolume(row);
-              }
-          });
+    if (pipeSize && length) {
+        const volume = pipeTable[pipeSize].volume1m * length;
+        row.querySelector(".ans").textContent = volume.toFixed(6);
+    } else {
+        row.querySelector(".ans").textContent = "";
+    }
 
-// 行追加ボタン
+    calcTotalVolume();
+}
+
+// 入力イベント
+document.addEventListener("input", (e) => {
+    if (e.target.classList.contains("length")) {
+        const row = e.target.closest(".row");
+        calcThisRowVolume(row);
+    }
+});
+
+document.addEventListener("change", (e) => {
+    if (e.target.classList.contains("pipe-size")) {
+        const row = e.target.closest(".row");
+        calcThisRowVolume(row);
+    }
+});
+
+// 行追加
 document.getElementById("addrow").addEventListener("click", () => {
     const rows = document.querySelectorAll("#rows .row");
     let newRow;
 
     if (rows.length === 0) {
-        // ★ 全行削除後は「元のHTMLにある最初の行」を再生成する
-        const original = document.querySelector("#originalRow"); 
+        const original = document.querySelector("#originalRow");
         newRow = original.cloneNode(true);
         newRow.style.display = "";
     } else {
-        // 通常は前行を計算してから複製
         const prevRow = rows[rows.length - 1];
         calcThisRowVolume(prevRow);
 
@@ -346,7 +340,6 @@ document.getElementById("addrow").addEventListener("click", () => {
         newRow = firstRow.cloneNode(true);
     }
 
-// 初期化
     newRow.querySelector(".pipe-size").value = "";
     newRow.querySelector(".length").value = "";
     newRow.querySelector(".ans").textContent = "";
@@ -358,108 +351,78 @@ document.getElementById("addrow").addEventListener("click", () => {
     calcTotalVolume();
 });
 
-// 延長欄タップ時のチェック
-          document.addEventListener("focusin", (e) => {
-              if (!e.target.classList.contains("length")) return;
-          
-              const row = e.target.closest(".row");
-              const pipeSize = row.querySelector(".pipe-size").value;
-          
-              if (!pipeSize) {
-                  alert("管サイズを選択してください");
-                  row.querySelector(".pipe-size").focus();
-              }
-          });
+// 室内機内容積
+function calcIndoorVolume() {
+    const count = Number(document.getElementById("indoorCount").value);
+    if (isNaN(count) || count <= 0) return 0;
+    return count * 0.3;
+}
 
-  // 合計の計算
-          function calcTotalVolume() {
-            const rows = document.querySelectorAll("#rows .row");
-            let total = 0;
-          
-            rows.forEach(row => {
-                 const pipeSize = row.querySelector(".pipe-size").value;
-                 const length = Number(row.querySelector(".length").value);
-            
-                 if (pipeSize && length) {
-                        total += pipeTable[pipeSize].volume1m * length;
-                  }
-             });
-          
-             // 配管内容積の表示
-             document.getElementById("totalValue").textContent = pipeTotal.toFixed(6);
-            
-             // ★ 室内機内容積
-             const indoorVol = calcIndoorVolume();
-             document.getElementById("indoorTotal").textContent = indoorVol.toFixed(6);
-            
-             // ★ 総内容積
-             const totalVolume = pipeTotal + indoorVol;
-             document.getElementById("totalVolume").textContent = totalVolume.toFixed(6);
-            
-             // ★ 必要窒素量（Nm³）
-             const needN2 = calcNeedN2(totalVolume);
-             document.getElementById("needN2").textContent = needN2.toFixed(2);
-            
-             // ★ ボンベ本数
-             const bottleCount = calcBottleCount(totalVolume);
-             document.getElementById("bottleCount").textContent = bottleCount;
-            }
+// 必要窒素量
+function calcNeedN2(totalVolume) {
+    const testGauge = Number(document.getElementById("testPressure").value);
+    if (isNaN(testGauge) || testGauge <= 0) return 0;
 
-// 必要窒素量（Nm3）を計算
-            function calcNeedN2(totalVolume) {
-                const testGauge = Number(document.getElementById("testPressure").value);
-                if (isNaN(testGauge) || testGauge <= 0) return 0;
-            
-                const p_abs = testGauge + 0.1;   // 絶対圧
-                return totalVolume * (p_abs / 0.1);
-            }
+    const p_abs = testGauge + 0.1;
+    return totalVolume * (p_abs / 0.1);
+}
 
-// ★ 本数計算を追加（呼び出し）
-                    const bottleCount = calcBottleCount(total);
-                    document.getElementById("bottleCount").textContent = bottleCount;
-          }  
+// ボンベ実効容量
+function calcEffectiveBottleVolume() {
+    const nominal = 7;
+    const p_init = 14.8;
 
-// 絶対圧力の計算
-         function calcEffectiveBottleVolume() {
-            const nominal = 7;        // 公称容量（Nm³）
-            const p_init = 14.8;      // 初期圧力（MPa abs）
+    const testGauge = Number(document.getElementById("testPressure").value);
+    if (isNaN(testGauge) || testGauge <= 0) return 0;
 
-            const testGauge = Number(document.getElementById("testPressure").value);
-            if (isNaN(testGauge) || testGauge <= 0) return 0;
+    const p_limit = testGauge + 0.1;
+    return nominal * ((p_init - p_limit) / p_init);
+}
 
-            const p_limit = testGauge + 0.1;   // 絶対圧に変換
-           
-// ★ ボンベを「14.8 → p_limit」まで使ったときのガス量
-            const usable = nominal * ((p_init - p_limit) / p_init);
+// ボンベ本数
+function calcBottleCount(totalVolume) {
+    const effective = calcEffectiveBottleVolume();
+    if (effective <= 0) return "0.00";
 
-            return usable;
-          }
+    const raw = totalVolume / effective;
+    const rounded3 = Math.ceil(raw * 1000) / 1000;
+    return rounded3.toFixed(2);
+}
 
-// 本数の計算
-              function calcBottleCount(totalVolume) {
-                  const effective = calcEffectiveBottleVolume();
-                  if (effective <= 0) return 0;
+// 総内容積計算（完全版）
+function calcTotalVolume() {
+    const rows = document.querySelectorAll("#rows .row");
+    let pipeTotal = 0;
 
-                  const raw = totalVolume / effective;
+    rows.forEach(row => {
+        const pipeSize = row.querySelector(".pipe-size").value;
+        const length = Number(row.querySelector(".length").value);
 
-    // ★ 小数点3位で切り上げ
-                  const rounded3 = Math.ceil(raw * 1000) / 1000;
+        if (pipeSize && length) {
+            pipeTotal += pipeTable[pipeSize].volume1m * length;
+        }
+    });
 
-    // ★ 表示は小数点2位
-                  return rounded3.toFixed(2);
-              }
+    document.getElementById("totalValue").textContent = pipeTotal.toFixed(6);
 
+    const indoorVol = calcIndoorVolume();
+    document.getElementById("indoorTotal").textContent = indoorVol.toFixed(6);
 
-// 試験圧力入力後　再計算
-             const testInput = document.getElementById("testPressure");
+    const totalVolume = pipeTotal + indoorVol;
+    document.getElementById("totalVolume").textContent = totalVolume.toFixed(6);
 
-            testInput.addEventListener("input", () => {
-                const v = Number(testInput.value);
-                if (v > 0) {
-                  calcTotalVolume();
-                }
-              });
+    const needN2 = calcNeedN2(totalVolume);
+    document.getElementById("needN2").textContent = needN2.toFixed(2);
 
+    const bottleCount = calcBottleCount(totalVolume);
+    document.getElementById("bottleCount").textContent = bottleCount;
+}
+
+// 試験圧力入力時
+document.getElementById("testPressure").addEventListener("input", () => {
+    calcTotalVolume();
+});
+  
 </script>
 
 </body>
