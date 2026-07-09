@@ -346,15 +346,7 @@ document.getElementById("addrow").addEventListener("click", () => {
         newRow = firstRow.cloneNode(true);
     }
 
-    // 室内機内容積（Ｎｍ３）を計算
-        function calcIndoorVolume() {
-            const count = Number(document.getElementById("indoorCount").value);
-            if (isNaN(count) || count <= 0) return 0;
-
-            return count * 0.3;   // 係数 0.3Nm³
-        }
-  
-    // 初期化
+// 初期化
     newRow.querySelector(".pipe-size").value = "";
     newRow.querySelector(".length").value = "";
     newRow.querySelector(".ans").textContent = "";
@@ -398,9 +390,11 @@ document.getElementById("addrow").addEventListener("click", () => {
             
              // ★ 室内機内容積
              const indoorVol = calcIndoorVolume();
+             document.getElementById("indoorTotal").textContent = indoorVol.toFixed(6);
             
              // ★ 総内容積
              const totalVolume = pipeTotal + indoorVol;
+             document.getElementById("totalVolume").textContent = totalVolume.toFixed(6);
             
              // ★ 必要窒素量（Nm³）
              const needN2 = calcNeedN2(totalVolume);
