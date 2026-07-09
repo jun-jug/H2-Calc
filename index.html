@@ -359,17 +359,19 @@ document.getElementById("addrow").addEventListener("click", () => {
           }  
 
 // 絶対圧力の計算
-          function calcEffectiveBottleVolume() {
-              const nominal = 7;        // 公称容量（Nm³）
-              const p_init = 14.8;      // 初期圧力（MPa abs）
-        
-// ★ 試験圧力（ゲージ）を入力 → 大気圧を足して絶対圧にする
-              const testGauge = Number(document.getElementById("testPressure").value);
-              const p_limit = testGauge + 0.1;   // ← 大気圧を足す（絶対圧）
-        
-              if (p_limit <= 0) return 0;
-        
-              return nominal * (p_limit / p_init);
+         function calcEffectiveBottleVolume() {
+            const nominal = 7;        // 公称容量（Nm³）
+            const p_init = 14.8;      // 初期圧力（MPa abs）
+
+            const testGauge = Number(document.getElementById("testPressure").value);
+            if (isNaN(testGauge) || testGauge <= 0) return 0;
+
+            const p_limit = testGauge + 0.1;   // 絶対圧に変換
+           
+// ★ ボンベを「14.8 → p_limit」まで使ったときのガス量
+            const usable = nominal * ((p_init - p_limit) / p_init);
+
+            return usable;
           }
 
 // 本数の計算
