@@ -197,6 +197,16 @@
               配管内容積合計：<span id="totalValue">0</span> m³
       </div>
 
+<!-- 機器等内容積合計 -->
+          <div>
+              機器等内容積合計：<span id="indoorTotal">0</span> m³
+          </div>
+
+<!-- 総内容積合計 -->
+          <div>
+              総内容積合計：<span id="totalVolume">0</span> m³
+          </div>
+
 <!-- 試験圧力（MPa）　入力欄 -->
       耐圧試験圧力（Mpa）:<input id="testPressure" class="testPress" type="number" step="0.1">
 
@@ -376,45 +386,29 @@ document.getElementById("addrow").addEventListener("click", () => {
           
             rows.forEach(row => {
                  const pipeSize = row.querySelector(".pipe-size").value;
-                const length = Number(row.querySelector(".length").value);
-          
-                if (pipeSize && length) {
-                      total += pipeTable[pipeSize].volume1m * length;
-                }
+                 const length = Number(row.querySelector(".length").value);
+            
+                 if (pipeSize && length) {
+                        total += pipeTable[pipeSize].volume1m * length;
+                  }
              });
           
-             document.getElementById("totalValue").textContent = total.toFixed(6);
-
-// 総内容積＝配管内容積+室内機内容積
-            function calcTotalVolume() {
-                const rows = document.querySelectorAll("#rows .row");
-                let pipeTotal = 0;
+             // 配管内容積の表示
+             document.getElementById("totalValue").textContent = pipeTotal.toFixed(6);
             
-                rows.forEach(row => {
-                    const pipeSize = row.querySelector(".pipe-size").value;
-                    const length = Number(row.querySelector(".length").value);
+             // ★ 室内機内容積
+             const indoorVol = calcIndoorVolume();
             
-                    if (pipeSize && length) {
-                        pipeTotal += pipeTable[pipeSize].volume1m * length;
-                    }
-                });
+             // ★ 総内容積
+             const totalVolume = pipeTotal + indoorVol;
             
-                // 配管内容積の表示
-                document.getElementById("totalValue").textContent = pipeTotal.toFixed(6);
+             // ★ 必要窒素量（Nm³）
+             const needN2 = calcNeedN2(totalVolume);
+             document.getElementById("needN2").textContent = needN2.toFixed(2);
             
-                // ★ 室内機内容積
-                const indoorVol = calcIndoorVolume();
-            
-                // ★ 総内容積
-                const totalVolume = pipeTotal + indoorVol;
-            
-                // ★ 必要窒素量（Nm³）
-                const needN2 = calcNeedN2(totalVolume);
-                document.getElementById("needN2").textContent = needN2.toFixed(2);
-            
-                // ★ ボンベ本数
-                const bottleCount = calcBottleCount(totalVolume);
-                document.getElementById("bottleCount").textContent = bottleCount;
+             // ★ ボンベ本数
+             const bottleCount = calcBottleCount(totalVolume);
+             document.getElementById("bottleCount").textContent = bottleCount;
             }
 
 // 必要窒素量（Nm3）を計算
