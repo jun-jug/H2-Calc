@@ -422,7 +422,12 @@ function calcTotalVolume() {
 document.getElementById("testPressure").addEventListener("input", () => {
     calcTotalVolume();
 });
-  
+
+// 機器台数入力リアルタイム　容積計算
+document.getElementById("indoorCount").addEventListener("input", () => {
+    calcTotalVolume();
+});
+
 </script>
 
 </body>
