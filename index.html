@@ -49,9 +49,9 @@
   
       /* 行追加ボタン・削除ボタン　見た目 */
       .actionBtn {
-        margin-top: 15px;
-        font-size: 18px;
-        padding: 8px 10px;
+          margin-top: 15px;
+          font-size: 18px;
+          padding: 8px 10px;
       }
 
       /* 削除モードON　見た目 */
@@ -88,14 +88,14 @@
 
 /* 各行削除ボタン */
       .delRow {
-      display: none;      /* ← 最初は隠す */
-      margin-right: 5px;
-      font-size: 22px;
-      padding: 0px 0px;
-      background: none;
-      border: none;
-      color: #d33;          /* ← 赤系で「削除」感を出す */
-      cursor: pointer;
+          display: none;      /* ← 最初は隠す */
+          margin-right: 5px;
+          font-size: 22px;
+          padding: 0px 0px;
+          background: none;
+          border: none;
+          color: #d33;          /* ← 赤系で「削除」感を出す */
+          cursor: pointer;
       }
       .row-controls{
           display: flex;
@@ -108,19 +108,19 @@
       }  
     
       #bottomArea {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: #fff;
-      padding: 10px 15px;
-      border-top: 2px solid #ccc;
-      box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          background: #fff;
+          padding: 10px 15px;
+          border-top: 2px solid #ccc;
+          box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
       }
       
     .testPress {
-          width: 80px;        /* ←短く */
-          height: 40px;       /* ←太く */
+          width: 60px;        /* ←短く */
+          height: 32px;       /* ←太く */
           font-size: 22px;    /* ←文字大きく */
           font-weight: bold;  /* ←太文字 */
           text-align: right;  /* ←数字を右寄せ */
@@ -161,6 +161,12 @@
       font-weight: bold;   /* AnswerBackをboldに */
       margin-left: 8px;    /* ：の後のスペース（半角×2） */
       font-size: 22px;     /* ← これ追加！ */
+}
+
+  .coefText {
+      margin-left: 6px;
+      color: #666;
+      font-size: 16px;
 }
 
     </style>
@@ -207,7 +213,8 @@
 <!-- 室内機 再数入力欄 -->
       <div id="undoorUnitArea">
           室内機（分流Ctrl等含む）:
-              <input id="indoorCount" type="number" class="indoorInput"> 台
+          <input id="indoorCount" type="number" class="indoorInput"> 台
+          <span class="coefText">（係数 0.3 Nm³/台）</span>
       </div>
     
 <!-- 結果表示エリアと合計ボタン -->
