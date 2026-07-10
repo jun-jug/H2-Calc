@@ -169,6 +169,38 @@
       font-size: 16px;
 }
 
+  .siteInput {
+      width: 260px;
+      height: 32px;
+      font-size: 18px;
+      padding-left: 6px;
+}
+  #siteArea {
+      margin: 10px 0;
+      font-size: 18px;
+}
+
+  #printArea {
+      display: none;
+      font-size: 18px;
+      padding: 20px;
+}
+  
+  @media print {
+      body * {
+          visibility: hidden;
+      }
+      #printArea, #printArea * {
+          visibility: visible;
+      }
+      #printArea {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+      }
+}
+    
     </style>
   
 </head>
@@ -216,8 +248,14 @@
           <input id="indoorCount" type="number" class="indoorInput"> 台
           <span class="coefText">（係数 0.3 Nm³/台）</span>
       </div>
+      
+<!-- 現場情報入力 -->
+      <div id="siteArea">
+          現場名：<input id="siteName" type="text" class="siteInput" placeholder="例：〇〇ビル空調更新工事">
+      </div>
     
-<!-- 結果表示エリアと合計ボタン -->
+
+<!-- 結果表示エリアと印刷ボタン-->
       <div id="bottomArea">
            
 <!-- 配管内容積合計 -->        
@@ -257,6 +295,9 @@
             <div class="bottomLabel">必要ボンベ本数：</div>
             <div class="bottomValue"><span id="bottleCount">0</span> 本</div>
         </div>
+<!-- 印刷ボタン -->        
+        <button id="printBtn" class="actionBtn">印刷する</button>
+
     </div>
  
 <!-- 全行削除時のテンプレート -->
@@ -286,7 +327,31 @@
     <span class="ans"></span>
     <span class="unit-vol">m³</span>
 </div>
- 
+
+<!-- 印刷範囲 -->  
+    <div id="printArea">
+        <h2>耐圧試験 現場指示書</h2>
+    
+        <div>現場名：<span id="printSite"></span></div>
+        <div>日付：<span id="printDate"></span></div>
+    
+        <hr>
+    
+        <h3>配管内容積一覧</h3>
+        <div id="printPipeList"></div>
+    
+        <hr>
+    
+        <div>配管内容積合計：<span id="printTotalValue"></span> m³</div>
+        <div>機器等内容積合計：<span id="printIndoorTotal"></span> m³</div>
+        <div>総内容積合計：<span id="printTotalVolume"></span> m³</div>
+    
+        <div>耐圧試験圧力：<span id="printPressure"></span> MPa</div>
+        <div>必要窒素量：<span id="printNeedN2"></span> Nm³</div>
+        <div>必要ボンベ本数：<span id="printBottle"></span> 本</div>
+    </div>
+
+  
 <script>
 // モード切替
 let deleteMode = false;
@@ -466,6 +531,54 @@ document.getElementById("indoorCount").addEventListener("input", () => {
     calcTotalVolume();
 });
 
+// ★　印刷　★　　印刷前に値を転記
+document.getElementById("printBtn").addEventListener("click", () => {
+
+    // 現場名
+    document.getElementById("printSite").textContent =
+        document.getElementById("siteName").value;
+
+    // 日付
+    const today = new Date();
+    document.getElementById("printDate").textContent =
+        today.toLocaleDateString("ja-JP");
+
+    // 配管一覧
+    const rows = document.querySelectorAll("#rows .row");
+    let listHTML = "";
+    rows.forEach(row => {
+        const size = row.querySelector(".pipe-size").value;
+        const len = row.querySelector(".length").value;
+        const vol = row.querySelector(".ans").textContent;
+        if (size && len) {
+            listHTML += `${size}φ　${len}m　${vol} m³<br>`;
+        }
+    });
+    document.getElementById("printPipeList").innerHTML = listHTML;
+
+    // 合計値
+    document.getElementById("printTotalValue").textContent =
+        document.getElementById("totalValue").textContent;
+
+    document.getElementById("printIndoorTotal").textContent =
+        document.getElementById("indoorTotal").textContent;
+
+    document.getElementById("printTotalVolume").textContent =
+        document.getElementById("totalVolume").textContent;
+
+    document.getElementById("printPressure").textContent =
+        document.getElementById("testPressure").value;
+
+    document.getElementById("printNeedN2").textContent =
+        document.getElementById("needN2").textContent;
+
+    document.getElementById("printBottle").textContent =
+        document.getElementById("bottleCount").textContent;
+
+    // 印刷
+    window.print();
+});
+  
 </script>
 
 </body>
