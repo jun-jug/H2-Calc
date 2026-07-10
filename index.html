@@ -190,11 +190,15 @@
       body * {
           visibility: hidden;
       }
+     /* bottomArea を完全に消す（これが重要） */
+    #bottomArea {
+        display: none !important;
+    }
       #printArea, #printArea * {
-          visibility: visible;
+          visibility: visible !important;
       }
       #printArea {
-          display: block;
+          display: block !important;
           position: absolute;
           top: 0;
           left: 0;
@@ -354,7 +358,6 @@
         <div>必要ボンベ本数：<span id="printBottle"></span> 本</div>
     </div>
 
-  
 <script>
 // モード切替
 let deleteMode = false;
